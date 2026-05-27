@@ -3,27 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Register</title>
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
+
+    <nav id="navigation">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+    </nav>
+
     <form action="login.html">
-    <h1>Register Page</h1>
-    <lable for="eue">Enter User Email</lable>
-    <input type="email" id="eue" placeholder="enter user email" />
-    <br/>
-    <lable for="eun">Enter User Name</lable>
-    <input type="text"  name="eun" placeholder=" enter user name" />
-    <br/>
-    <lable for="ep">Enter Password</lable>
-    <input type="password" id="ep" placeholder="enter password" />
-    <br/>
-    <lable for="cp">Conform Password</lable>
-    <input type="password" name="cp" placeholder="conform password" />
-    <br/>
-    <button type="submit">register</button>
-    <hr/>
-    <p>if u already register then login</p>
-    <a href="login.html">login</a>
+
+        <h1>Register Page</h1>
+
+        <label for="email">Enter Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter Email" required>
+
+        <label for="username">Enter Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter Username" required>
+
+        <label for="password">Enter Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter Password" required>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+
+        <button type="submit">Register</button>
+
+        <p>Already registered?</p>
+        <p><a href="login.html">Login Here</a></p>
+
     </form>
+
 </body>
 </html>
