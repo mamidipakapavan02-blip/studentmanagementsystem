@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "email": "pavankumar@gmail.com",
+      "username": "mpk",
+      "password": "Pavan@1234",
+      "id": "xeOaENBgn9o"
+    },
+    {
+      "email": "mamidipakapavan2@gmail.com",
+      "username": "msvk",
+      "password": "Pavan@1234",
+      "id": "4msENlQ1AFw"
+    }
+  ],
+  "students": [
+    {
+      "name": "M Pavan Kumar",
+      "rollno": "23b81a05jd",
+      "branch": "cse",
+      "cgpa": 9.04,
+      "id": "zS433EmNbTg"
+    },
+    {
+      "name": "Md hamza",
+      "rollno": "23b81a05hh",
+      "branch": "cse",
+      "cgpa": 8.91,
+      "id": "f4BUBJTB9QA"
+    },
+    {
+      "name": "G Yashwanth",
+      "rollno": "23b81a05kw",
+      "branch": "cse",
+      "cgpa": 8.5,
+      "id": "RcTF5SWrl0w"
+    },
+    {
+      "name": "J rohith reddy",
+      "rollno": "23b81a05jq",
+      "branch": "cse",
+      "cgpa": 9.4,
+      "id": "bSJVI6yOjR0"
+    },
+    {
+      "name": "E Sai Reddy",
+      "rollno": "23b81a05JT",
+      "branch": "cse",
+      "cgpa": 8.2,
+      "id": "6U6CQHW4YaQ"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

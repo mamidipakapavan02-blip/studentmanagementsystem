@@ -1,4 +1,6 @@
-// ================= REGEX PATTERNS =================
+// =====================================================
+// REGEX PATTERNS
+// =====================================================
 
 const emailRegex =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,7 +12,9 @@ const usernameRegex =
     /^[A-Za-z ]{3,20}$/;
 
 
-// ================= REGISTER =================
+// =====================================================
+// REGISTER USER
+// =====================================================
 
 const registerForm =
     document.getElementById("registerForm");
@@ -19,7 +23,7 @@ if (registerForm) {
 
     registerForm.addEventListener(
         "submit",
-        function (e) {
+        async function (e) {
 
             e.preventDefault();
 
@@ -81,47 +85,81 @@ if (registerForm) {
                 return;
             }
 
-            let users =
-                JSON.parse(
-                    localStorage.getItem("users")
-                ) || [];
+            try {
 
-            const userExists =
-                users.some(
-                    user => user.email === email
+                const response =
+                    await fetch(
+                        "http://localhost:3000/users"
+                    );
+
+                const users =
+                    await response.json();
+
+                const userExists =
+                    users.some(
+                        user => user.email === email
+                    );
+
+                if (userExists) {
+
+                    emailError.innerText =
+                        "Email already registered";
+
+                    return;
+                }
+
+                const userData = {
+                    email,
+                    username,
+                    password
+                };
+
+                const res =
+                    await fetch(
+                        "http://localhost:3000/users",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body:
+                                JSON.stringify(userData)
+                        }
+                    );
+
+                if (!res.ok) {
+
+                    alert(
+                        "Registration Failed"
+                    );
+
+                    return;
+                }
+
+                alert(
+                    "Registration Successful"
                 );
 
-            if (userExists) {
+                window.location.href =
+                    "login.html";
 
-                emailError.innerText =
-                    "Email already registered";
+            } catch (error) {
 
-                return;
+                console.error(error);
+
+                alert(
+                    "Server Error"
+                );
             }
-
-            users.push({
-                email,
-                username,
-                password
-            });
-
-            localStorage.setItem(
-                "users",
-                JSON.stringify(users)
-            );
-
-            alert(
-                "Registration Successful"
-            );
-
-            window.location.href =
-                "login.html";
         }
     );
 }
 
 
-// ================= LOGIN =================
+// =====================================================
+// LOGIN USER
+// =====================================================
 
 const loginForm =
     document.getElementById("loginForm");
@@ -130,7 +168,7 @@ if (loginForm) {
 
     loginForm.addEventListener(
         "submit",
-        function (e) {
+        async function (e) {
 
             e.preventDefault();
 
@@ -157,84 +195,81 @@ if (loginForm) {
                 return;
             }
 
-            const users =
-                JSON.parse(
-                    localStorage.getItem("users")
-                ) || [];
+            try {
 
-            const validUser =
-                users.find(
-                    user =>
-                        user.email === email &&
-                        user.password === password
-                );
+                const response =
+                    await fetch(
+                        "http://localhost:3000/users"
+                    );
 
-            if (validUser) {
+                const users =
+                    await response.json();
 
-                localStorage.setItem(
-                    "loggedIn",
-                    "true"
-                );
+                const validUser =
+                    users.find(
+                        user =>
+                            user.email === email &&
+                            user.password === password
+                    );
 
-                localStorage.setItem(
-                    "currentUser",
-                    JSON.stringify(validUser)
-                );
+                if (validUser) {
+
+                    alert(
+                        "Login Successful"
+                    );
+
+                    window.location.href =
+                        "dashboard.html";
+                }
+                else {
+
+                    passwordError.innerText =
+                        "Invalid Email or Password";
+                }
+
+            } catch (error) {
+
+                console.error(error);
 
                 alert(
-                    "Login Successful"
+                    "Server Error"
                 );
-
-                window.location.href =
-                    "dashboard.html";
-            }
-            else {
-
-                passwordError.innerText =
-                    "Invalid Email or Password";
             }
         }
     );
 }
 
 
-// ================= ADD STUDENT =================
+// =====================================================
+// ADD STUDENT
+// =====================================================
 
 const addStudentForm =
-    document.getElementById(
-        "addStudentForm"
-    );
+    document.getElementById("addStudentForm");
 
 if (addStudentForm) {
 
     addStudentForm.addEventListener(
         "submit",
-        function (e) {
+        async function (e) {
 
             e.preventDefault();
 
             const name =
-                document.getElementById("name")
-                    .value.trim();
+                document.getElementById("name").value.trim();
 
             const rollno =
-                document.getElementById("rollno")
-                    .value.trim();
+                document.getElementById("rollno").value.trim();
 
             const branch =
-                document.getElementById("branch")
-                    .value.trim();
+                document.getElementById("branch").value.trim();
 
             const cgpa =
                 parseFloat(
-                    document.getElementById("cgpa")
-                        .value
+                    document.getElementById("cgpa").value
                 );
 
-            if (
-                cgpa < 0 ||
-                cgpa > 10
-            ) {
+            if (cgpa < 0 || cgpa > 10) {
 
                 alert(
                     "CGPA must be between 0 and 10"
@@ -244,23 +279,23 @@ if (addStudentForm) {
             }
 
             const student = {
-                id: Date.now(),
                 name,
                 rollno,
                 branch,
                 cgpa
             };
 
-            let students =
-                JSON.parse(
-                    localStorage.getItem("students")
-                ) || [];
-
-            students.push(student);
-
-            localStorage.setItem(
-                "students",
-                JSON.stringify(students)
+            await fetch(
+                "http://localhost:3000/students",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify(student)
+                }
             );
 
             alert(
@@ -274,7 +309,9 @@ if (addStudentForm) {
 }
 
 
-// ================= VIEW STUDENTS =================
+// =====================================================
+// VIEW STUDENTS
+// =====================================================
 
 const studentTableBody =
     document.getElementById(
@@ -282,15 +319,19 @@ const studentTableBody =
     );
 
 if (studentTableBody) {
+
     displayStudents();
 }
 
-function displayStudents() {
+async function displayStudents() {
 
-    let students =
-        JSON.parse(
-            localStorage.getItem("students")
-        ) || [];
+    const response =
+        await fetch(
+            "http://localhost:3000/students"
+        );
+
+    const students =
+        await response.json();
 
     studentTableBody.innerHTML = "";
 
@@ -315,7 +356,6 @@ function displayStudents() {
             <td>${student.rollno}</td>
             <td>${student.branch}</td>
             <td>${student.cgpa}</td>
-
             <td>
                 <button
                     class="btn btn-warning btn-sm me-2"
@@ -335,24 +375,26 @@ function displayStudents() {
 }
 
 
-// ================= DELETE STUDENT =================
+// =====================================================
+// DELETE STUDENT
+// =====================================================
 
-function deleteStudent(id) {
+async function deleteStudent(id) {
 
-    let students =
-        JSON.parse(
-            localStorage.getItem("students")
-        ) || [];
-
-    students =
-        students.filter(
-            student =>
-                student.id !== id
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this student?"
         );
 
-    localStorage.setItem(
-        "students",
-        JSON.stringify(students)
+    if (!confirmDelete) {
+        return;
+    }
+
+    await fetch(
+        `http://localhost:3000/students/${id}`,
+        {
+            method: "DELETE"
+        }
     );
 
     alert(
@@ -363,72 +405,79 @@ function deleteStudent(id) {
 }
 
 
-// ================= EDIT STUDENT =================
+// =====================================================
+// EDIT STUDENT REDIRECT
+// =====================================================
 
 function editStudent(id) {
 
-    localStorage.setItem(
-        "editId",
-        id
-    );
-
     window.location.href =
-        "editstudent.html";
+        `editstudent.html?xid=${id}`;
 }
 
+
+// =====================================================
+// LOAD STUDENT FOR EDIT
+// =====================================================
+
 const editStudentForm =
-    document.getElementById(
-        "editStudentForm"
-    );
+    document.getElementById("editStudentForm");
 
 if (editStudentForm) {
 
-    let students =
-        JSON.parse(
-            localStorage.getItem("students")
-        ) || [];
+    loadStudent();
 
-    const editId =
-        Number(
-            localStorage.getItem("editId")
-        );
+    async function loadStudent() {
 
-    const student =
-        students.find(
-            s => s.id === editId
-        );
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
 
-    if (student) {
+        const id =
+            params.get("id");
 
-        document.getElementById("name")
-            .value = student.name;
+        const response =
+            await fetch(
+                `http://localhost:3000/students/${id}`
+            );
 
-        document.getElementById("rollno")
-            .value = student.rollno;
+        const student =
+            await response.json();
 
-        document.getElementById("branch")
-            .value = student.branch;
+        document.getElementById("name").value =
+            student.name;
 
-        document.getElementById("cgpa")
-            .value = student.cgpa;
+        document.getElementById("rollno").value =
+            student.rollno;
+
+        document.getElementById("branch").value =
+            student.branch;
+
+        document.getElementById("cgpa").value =
+            student.cgpa;
     }
 
     editStudentForm.addEventListener(
         "submit",
-        function (e) {
+        async function (e) {
 
             e.preventDefault();
 
-            const cgpa =
-                parseFloat(
-                    document.getElementById("cgpa")
-                        .value
+            const params =
+                new URLSearchParams(
+                    window.location.search
                 );
 
-            if (
-                cgpa < 0 ||
-                cgpa > 10
-            ) {
+            const id =
+                params.get("id");
+
+            const cgpa =
+                parseFloat(
+                    document.getElementById("cgpa").value
+                );
+
+            if (cgpa < 0 || cgpa > 10) {
 
                 alert(
                     "CGPA must be between 0 and 10"
@@ -437,33 +486,25 @@ if (editStudentForm) {
                 return;
             }
 
-            const index =
-                students.findIndex(
-                    s => s.id === editId
-                );
-
-            students[index] = {
-
-                id: editId,
-
-                name:
-                    document.getElementById("name")
-                        .value,
-
-                rollno:
-                    document.getElementById("rollno")
-                        .value,
-
-                branch:
-                    document.getElementById("branch")
-                        .value,
-
-                cgpa
-            };
-
-            localStorage.setItem(
-                "students",
-                JSON.stringify(students)
+            await fetch(
+                `http://localhost:3000/students/${id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: Number(id),
+                        name:
+                            document.getElementById("name").value.trim(),
+                        rollno:
+                            document.getElementById("rollno").value.trim(),
+                        branch:
+                            document.getElementById("branch").value.trim(),
+                        cgpa
+                    })
+                }
             );
 
             alert(
@@ -477,50 +518,11 @@ if (editStudentForm) {
 }
 
 
-// ================= LOGOUT =================
+// =====================================================
+// LOGOUT
+// =====================================================
 
-if (
-    window.location.pathname.includes(
-        "logout.html"
-    )
-) {
-
-    localStorage.removeItem(
-        "loggedIn"
-    );
-
-    localStorage.removeItem(
-        "currentUser"
-    );
-}
-
-
-// ================= PAGE PROTECTION =================
-
-const protectedPages = [
-    "dashboard.html",
-    "addstudent.html",
-    "viewstudent.html",
-    "editstudent.html"
-];
-
-const currentPage =
-    window.location.pathname
-        .split("/")
-        .pop();
-
-if (
-    protectedPages.includes(
-        currentPage
-    ) &&
-    localStorage.getItem(
-        "loggedIn"
-    ) !== "true"
-) {
-
-    alert(
-        "Please Login First"
-    );
+function logout() {
 
     window.location.href =
         "login.html";
